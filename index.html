@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guy Noé NZAMBA | Portfolio Génie Industriel & Logistique</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b1120',
+                        darkCard: 'rgba(15, 23, 42, 0.65)',
+                        electric: '#38bdf8',
+                        indigoAccent: '#6366f1',
+                        emeraldAccent: '#10b981',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1120;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Custom Glassmorphism Styling */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* Dynamic Glow Effects */
+        .glow-effect {
+            position: relative;
+        }
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #38bdf8, #6366f1, #10b981);
+            border-radius: inherit;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .glow-effect:hover::before {
+            opacity: 0.6;
+        }
+
+        /* Custom Progress Bar Animation */
+        .progress-line {
+            height: 8px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-line span {
+            height: 100%;
+            display: block;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #38bdf8, #6366f1);
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.1, 0.42, 0.85, 1);
+        }
+
+        /* Cursor Blink for Typing Effect */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 0.8s infinite;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Floating Gradient Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Notification Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 280px;
+            transform: translateY(100px);
+            transition: all 0.4s ease-in-out;
+        }
+        #toast.show {
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <!-- Interactive Canvas Particle Background -->
+    <canvas id="particleCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Glowing Background Orbs -->
+    <div class="orb w-96 h-96 bg-sky-500/15 top-10 left-10"></div>
+    <div class="orb w-80 h-80 bg-indigo-600/15 bottom-20 right-10"></div>
+    <div class="orb w-72 h-72 bg-emerald-500/10 top-1/2 left-1/3"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- HEADER / NAVIGATION -->
+        <header class="sticky top-0 z-50 w-full px-4 sm:px-8 py-4 transition-all duration-300" id="navbar">
+            <div class="max-w-7xl mx-auto glass-panel rounded-2xl px-6 py-3 flex items-center justify-between">
+                <!-- Brand / Logo -->
+                <a href="#accueil" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-400 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
+                        NT
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white group-hover:text-sky-400 transition-colors">
+                        Noé <span class="text-sky-400">Tayed</span>
+                    </span>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                    <a href="#accueil" class="hover:text-sky-400 transition-colors">Accueil</a>
+                    <a href="#apropos" class="hover:text-sky-400 transition-colors">À Propos</a>
+                    <a href="#competences" class="hover:text-sky-400 transition-colors">Compétences</a>
+                    <a href="#projets" class="hover:text-sky-400 transition-colors">Projets & Domaines</a>
+                    <a href="#contact" class="hover:text-sky-400 transition-colors">Contact</a>
+                </nav>
+
+                <!-- CTA Button -->
+                <div class="hidden sm:flex items-center space-x-4">
+                    <a href="https://www.linkedin.com/in/noe-tayed-415923442" target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white transition-all rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 shadow-md hover:shadow-sky-500/25 active:scale-95">
+                        <i class="fab font-normal fa-linkedin mr-2 text-base"></i> LinkedIn
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white focus:outline-none p-2">
+                    <i class="fas fa-bars text-2xl" id="menuIcon"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Dropdown Navigation -->
+            <div id="mobileMenu" class="hidden md:hidden max-w-7xl mx-auto mt-2 glass-panel rounded-2xl p-6 transition-all">
+                <div class="flex flex-col space-y-4 text-slate-300 font-medium">
+                    <a href="#accueil" class="mobile-link hover:text-sky-400 py-2 border-b border-slate-800">Accueil</a>
+                    <a href="#apropos" class="mobile-link hover:text-sky-400 py-2 border-b border-slate-800">À Propos</a>
+                    <a href="#competences" class="mobile-link hover:text-sky-400 py-2 border-b border-slate-800">Compétences</a>
+                    <a href="#projets" class="mobile-link hover:text-sky-400 py-2 border-b border-slate-800">Projets & Domaines</a>
+                    <a href="#contact" class="mobile-link hover:text-sky-400 py-2 border-b border-slate-800">Contact</a>
+                    <a href="https://www.linkedin.com/in/noe-tayed-415923442" target="_blank" class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600">
+                        <i class="fab fa-linkedin mr-2"></i> Voir Profile LinkedIn
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section id="accueil" class="relative pt-12 pb-24 md:pt-24 md:pb-32 px-4 sm:px-8 max-w-7xl mx-auto w-full flex items-center min-h-[85vh]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+                
+                <!-- Left Text Content -->
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-card text-sky-400 text-xs sm:text-sm font-medium">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Étudiant à Casablanca, Maroc</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h2 class="text-xl sm:text-2xl font-semibold text-slate-400">
+                            Bonjour, je suis <span class="text-white font-bold">Guy Noé NZAMBA</span>
+                        </h2>
+                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-white">
+                            Génie Industriel & <br class="hidden sm:block"/>
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400">
+                                Logistique
+                            </span>
+                        </h1>
+                        <!-- Typing Dynamic Phrase -->
+                        <div class="text-lg sm:text-xl text-slate-300 font-medium min-h-[50px] flex items-center justify-center lg:justify-start">
+                            <span id="typingText" class="typing-cursor"></span>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Passionné par l'optimisation des processus, l'analyse de flux, la modélisation technique et la supply chain moderne. J'allie rigueur scientifique et vision technologique pour relever les défis industriels de demain.
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#projets" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20 hover:scale-105 active:scale-95 transition-all">
+                            Explorer mes travaux <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/noe-tayed-415923442" target="_blank" class="px-6 py-3.5 rounded-xl glass-card text-slate-200 hover:text-white hover:border-sky-400/50 font-semibold hover:scale-105 active:scale-95 transition-all">
+                            <i class="fab fa-linkedin mr-2 text-sky-400"></i> Mon LinkedIn
+                        </a>
+                        <a href="#contact" class="px-6 py-3.5 rounded-xl glass-card text-slate-200 hover:text-white hover:border-emerald-400/50 font-semibold hover:scale-105 active:scale-95 transition-all">
+                            Me contacter
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Visual Dynamic Card / Graphic -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <!-- Background Decorative Glow -->
+                        <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-600 rounded-3xl blur-2xl opacity-30"></div>
+                        
+                        <div class="relative glass-panel rounded-3xl p-8 space-y-6 text-slate-200 border border-slate-700/50">
+                            <!-- Visual Header -->
+                            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-xs font-mono text-slate-500">cycle_prepa_gil.v1</span>
+                            </div>
+
+                            <!-- Stat Badge Grid -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                                    <i class="fas fa-graduation-cap text-sky-400 text-2xl mb-2"></i>
+                                    <div class="text-xs text-slate-400">Niveau d'études</div>
+                                    <div class="text-sm font-bold text-white">1ère Année CP</div>
+                                </div>
+                                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                                    <i class="fas fa-cogs text-indigo-400 text-2xl mb-2"></i>
+                                    <div class="text-xs text-slate-400">Spécialité</div>
+                                    <div class="text-sm font-bold text-white">Génie Ind. & Log.</div>
+                                </div>
+                                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                                    <i class="fas fa-cubes text-emerald-400 text-2xl mb-2"></i>
+                                    <div class="text-xs text-slate-400">Compétences CAO</div>
+                                    <div class="text-sm font-bold text-white">SOLIDWORKS</div>
+                                </div>
+                                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                                    <i class="fas fa-map-marker-alt text-rose-400 text-2xl mb-2"></i>
+                                    <div class="text-xs text-slate-400">Localisation</div>
+                                    <div class="text-sm font-bold text-white">Casablanca, Maroc</div>
+                                </div>
+                            </div>
+
+                            <!-- Industrial Tech Tag Cloud -->
+                            <div class="pt-2">
+                                <div class="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Mots-clés & Domaines</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-lg text-xs font-medium">Supply Chain</span>
+                                    <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-lg text-xs font-medium">Optimisation</span>
+                                    <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-medium">Physique Tech</span>
+                                    <span class="px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-lg text-xs font-medium">Gestion de flux</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ABOUT ME SECTION -->
+        <section id="apropos" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-sky-400 text-sm font-bold uppercase tracking-widest">Parcours & Vision</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">À Propos de Moi</h3>
+                <div class="w-16 h-1 bg-gradient-to-r from-sky-400 to-indigo-600 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Text Container -->
+                <div class="glass-panel p-8 rounded-3xl space-y-6">
+                    <h4 class="text-2xl font-bold text-white leading-snug">
+                        Étudiant ambitieux au cœur de la capital économique du Maroc.
+                    </h4>
+                    <p class="text-slate-300 leading-relaxed">
+                        Actuellement étudiant en **1ère année du cycle préparatoire en Génie Industriel et Logistique (GIL)** à Casablanca, je développe une expertise méthodologique pour appréhender les systèmes industriels complexes. 
+                    </p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Mon cursus me permet d'allier des fondements scientifiques solides (physique appliquée, électrotechnique, mathématiques) à des outils modernes de gestion de la production, de conception assistée par ordinateur (CAO) et de modélisation informatique.
+                    </p>
+                    <div class="p-4 rounded-2xl bg-sky-950/40 border border-sky-500/20 text-sky-200 text-sm flex items-start space-x-3">
+                        <i class="fas fa-lightbulb text-sky-400 text-lg mt-0.5"></i>
+                        <span>Mon objectif est de concevoir, d'analyser et d'optimiser les chaînes logistiques de demain en y intégrant la digitalisation et le développement durable.</span>
+                    </div>
+                </div>
+
+                <!-- Feature Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 text-xl font-bold">
+                            01
+                        </div>
+                        <h5 class="text-lg font-bold text-white">Analyse de Flux</h5>
+                        <p class="text-slate-400 text-sm leading-relaxed">Identification des goulots d'étranglement et amélioration de la productivité globale.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl font-bold">
+                            02
+                        </div>
+                        <h5 class="text-lg font-bold text-white">Modélisation CAO</h5>
+                        <p class="text-slate-400 text-sm leading-relaxed">Conception mécanique et modélisation 3D assistée par ordinateur sous SOLIDWORKS.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl font-bold">
+                            03
+                        </div>
+                        <h5 class="text-lg font-bold text-white">Supply Chain</h5>
+                        <p class="text-slate-400 text-sm leading-relaxed">Compréhension des enjeux d'approvisionnement, de stockage et de distribution.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-xl font-bold">
+                            04
+                        </div>
+                        <h5 class="text-lg font-bold text-white">Digitalisation</h5>
+                        <p class="text-slate-400 text-sm leading-relaxed">Développement web frontend (HTML/CSS/JS) pour créer des tableaux de bord interactifs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS SECTION -->
+        <section id="competences" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-sky-400 text-sm font-bold uppercase tracking-widest">Savoir-faire</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Compétences & Outils</h3>
+                <div class="w-16 h-1 bg-gradient-to-r from-sky-400 to-indigo-600 mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Category Tabs / Filter -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Category 1: Industrial Engineering -->
+                <div class="glass-panel p-6 rounded-3xl space-y-6">
+                    <div class="flex items-center space-x-4 border-b border-slate-800 pb-4">
+                        <div class="p-3 bg-sky-500/10 text-sky-400 rounded-2xl">
+                            <i class="fas fa-industry text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Génie Industriel & Technique</h4>
+                            <p class="text-xs text-slate-400">Fondations de spécialité</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Optimisation des Flux</span>
+                                <span class="text-sky-400 font-bold">85%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 85%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Gestion de Production</span>
+                                <span class="text-sky-400 font-bold">80%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 80%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Dessin Technique & CAO (SOLIDWORKS)</span>
+                                <span class="text-sky-400 font-bold">75%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 75%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Physique Appliquée & Électrotechnique</span>
+                                <span class="text-sky-400 font-bold">80%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 80%;"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2: Software & IT -->
+                <div class="glass-panel p-6 rounded-3xl space-y-6">
+                    <div class="flex items-center space-x-4 border-b border-slate-800 pb-4">
+                        <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-2xl">
+                            <i class="fas fa-laptop-code text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Outillage Informatique & Web</h4>
+                            <p class="text-xs text-slate-400">Digitalisation & Développement</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">HTML5 / CSS3 / JavaScript</span>
+                                <span class="text-indigo-400 font-bold">75%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 75%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">VS Code & Environnement Dev</span>
+                                <span class="text-indigo-400 font-bold">85%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 85%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Suite Office & Gestion de données</span>
+                                <span class="text-indigo-400 font-bold">90%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 90%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Algorithmique & Logique</span>
+                                <span class="text-indigo-400 font-bold">80%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 80%;"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3: Soft Skills -->
+                <div class="glass-panel p-6 rounded-3xl space-y-6">
+                    <div class="flex items-center space-x-4 border-b border-slate-800 pb-4">
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl">
+                            <i class="fas fa-users-cog text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Soft Skills & Organisation</h4>
+                            <p class="text-xs text-slate-400">Qualités humaines</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Résolution de Problèmes</span>
+                                <span class="text-emerald-400 font-bold">90%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 90%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Esprit d'Analyse</span>
+                                <span class="text-emerald-400 font-bold">85%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 85%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Gestion de Projet</span>
+                                <span class="text-emerald-400 font-bold">75%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 75%;"></span></div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-medium">Communication & Travail d'équipe</span>
+                                <span class="text-emerald-400 font-bold">85%</span>
+                            </div>
+                            <div class="progress-line"><span style="width: 85%;"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PROJECTS & FOCUS AREAS -->
+        <section id="projets" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-sky-400 text-sm font-bold uppercase tracking-widest">Réalisations & Intérêts</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Projets & Domaines d'Application</h3>
+                <div class="w-16 h-1 bg-gradient-to-r from-sky-400 to-indigo-600 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between hover:border-sky-500/50 transition-all group">
+                    <div class="space-y-4">
+                        <div class="w-full h-48 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                            <i class="fas fa-truck-loading text-6xl text-sky-400/40 group-hover:text-sky-400 transition-colors"></i>
+                            <span class="absolute top-3 right-3 px-3 py-1 bg-sky-500/20 text-sky-300 rounded-full text-xs font-semibold border border-sky-500/30">Supply Chain</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white group-hover:text-sky-400 transition-colors">
+                            Optimisation & Logistique Industrielle
+                        </h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Étude théorique et modélisation de la réduction des goulots d'étranglement dans un atelier de production. Application des concepts de lean manufacturing et de fluidification des flux.
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-slate-800/80 mt-6 flex items-center justify-between text-xs font-medium text-slate-400">
+                        <span><i class="fas fa-chart-line mr-1 text-sky-400"></i> Amélioration continue</span>
+                        <span class="text-sky-400 font-semibold">Projet Académique</span>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition-all group">
+                    <div class="space-y-4">
+                        <div class="w-full h-48 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                            <i class="fas fa-cube text-6xl text-indigo-400/40 group-hover:text-indigo-400 transition-colors"></i>
+                            <span class="absolute top-3 right-3 px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-semibold border border-indigo-500/30">CAO & 3D</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">
+                            Modélisation Mechanical & SOLIDWORKS
+                        </h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Conception assistée par ordinateur de sous-ensembles mécaniques, mise en plan normalisée et étude de tolérancement géométrique pour l'assemblage industriel.
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-slate-800/80 mt-6 flex items-center justify-between text-xs font-medium text-slate-400">
+                        <span><i class="fas fa-drafting-compass mr-1 text-indigo-400"></i> Conception 3D</span>
+                        <span class="text-indigo-400 font-semibold">Conception Technique</span>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div class="space-y-4">
+                        <div class="w-full h-48 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                            <i class="fas fa-globe text-6xl text-emerald-400/40 group-hover:text-emerald-400 transition-colors"></i>
+                            <span class="absolute top-3 right-3 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-semibold border border-emerald-500/30">Web & Digital</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                            Portfolio Interactif & Digitalisation
+                        </h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Développement complet d'un portfolio dynamique moderne en HTML/CSS/JS sous VS Code. Présentation interactive du parcours et démonstrateur des compétences numériques.
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-slate-800/80 mt-6 flex items-center justify-between text-xs font-medium text-slate-400">
+                        <span><i class="fas fa-code mr-1 text-emerald-400"></i> Développement Web</span>
+                        <span class="text-emerald-400 font-semibold">Projet Personnel</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-sky-400 text-sm font-bold uppercase tracking-widest">Échangeons</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Me Contacter</h3>
+                <div class="w-16 h-1 bg-gradient-to-r from-sky-400 to-indigo-600 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Contact Details -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div class="glass-panel p-8 rounded-3xl space-y-6">
+                        <h4 class="text-xl font-bold text-white">Restons en contact !</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            N'hésitez pas à me contacter pour toute opportunité de stage, projet académique, échange sur le Génie Industriel ou la Logistique.
+                        </p>
+
+                        <div class="space-y-4 pt-4">
+                            <!-- LinkedIn Contact -->
+                            <a href="https://www.linkedin.com/in/noe-tayed-415923442" target="_blank" class="flex items-center space-x-4 p-4 rounded-2xl glass-card hover:border-sky-400/50 transition-all group">
+                                <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400">Profil professionnel</div>
+                                    <div class="text-sm font-semibold text-white group-hover:text-sky-400 transition-colors">LinkedIn / Noé Tayed</div>
+                                </div>
+                            </a>
+
+                            <!-- Location Info -->
+                            <div class="flex items-center space-x-4 p-4 rounded-2xl glass-card">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400">Localisation</div>
+                                    <div class="text-sm font-semibold text-white">Casablanca, Maroc</div>
+                                </div>
+                            </div>
+
+                            <!-- Email Mock -->
+                            <div class="flex items-center space-x-4 p-4 rounded-2xl glass-card cursor-pointer" onclick="copyEmail()">
+                                <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400">Email (Cliquer pour copier)</div>
+                                    <div class="text-sm font-semibold text-white hover:text-indigo-400 transition-colors" id="emailText">noe.tayed.contact@gmail.com</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Contact Form -->
+                <div class="lg:col-span-7">
+                    <form id="contactForm" class="glass-panel p-8 rounded-3xl space-y-6">
+                        <h4 class="text-xl font-bold text-white mb-4">Envoyer un Message</h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Nom Complet</label>
+                                <input type="text" required placeholder="Votre Nom" class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-700/60 text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition-colors">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Adresse Email</label>
+                                <input type="email" required placeholder="nom@exemple.com" class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-700/60 text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition-colors">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Sujet</label>
+                            <input type="text" required placeholder="Sujet de votre message" class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-700/60 text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition-colors">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Message</label>
+                            <textarea rows="4" required placeholder="Écrivez votre message ici..." class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-700/60 text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition-colors"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold shadow-lg shadow-sky-500/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center space-x-2">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Envoyer le Message</span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-auto border-t border-slate-800/80 py-8 px-4 sm:px-8 bg-slate-950/40">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <div>
+                    © 2026 Guy Noé NZAMBA (Noé Tayed). Tous droits réservés.
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="https://www.linkedin.com/in/noe-tayed-415923442" target="_blank" class="hover:text-sky-400 transition-colors">
+                        <i class="fab fa-linkedin text-base"></i>
+                    </a>
+                    <a href="#accueil" class="hover:text-sky-400 transition-colors">Retour en haut ↑</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Notification Toast Popup -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 glass-panel border border-emerald-500/50 px-6 py-4 rounded-2xl flex items-center space-x-3 text-emerald-400 font-medium shadow-2xl">
+        <i class="fas fa-check-circle text-xl"></i>
+        <span id="toastMessage">Email copié avec succès !</span>
+    </div>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. Dynamic Particle Canvas Background ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(56, 189, 248, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.floor(window.innerWidth / 20);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- 2. Typing Effect Animation ---
+        const typingPhrases = [
+            "Optimisation des Flux & Processus",
+            "Dessin Technique & Modélisation CAO",
+            "Supply Chain & Logistique Industrielle",
+            "Digitalisation & Outils Web"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingSpeed = 90;
+        const typingElement = document.getElementById('typingText');
+
+        function typeEffect() {
+            const currentPhrase = typingPhrases[phraseIndex];
+            
+            if (isDeleting) {
+                typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(typeEffect, 1800);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % typingPhrases.length;
+                setTimeout(typeEffect, 400);
+            } else {
+                setTimeout(typeEffect, isDeleting ? typingSpeed / 2 : typingSpeed);
+            }
+        }
+        typeEffect();
+
+        // --- 3. Mobile Navigation Toggle ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuIcon = document.getElementById('menuIcon');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            } else {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            }
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            });
+        });
+
+        // --- 4. Toast Notification helper ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function copyEmail() {
+            const email = "noe.tayed.contact@gmail.com";
+            const tempInput = document.createElement('input');
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Adresse email copiée dans le presse-papier !");
+        }
+
+        // --- 5. Contact Form Simulation ---
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast("Merci ! Votre message a bien été envoyé.");
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>
